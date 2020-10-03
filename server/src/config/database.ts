@@ -1,6 +1,9 @@
 import path from "path";
 import "reflect-metadata";
 import { createConnection } from "typeorm";
+import { Activity } from "../entities/activity";
+import { ActivityPricing } from "../entities/activityPricing";
+import { Class } from "../entities/class";
 import { CreditCardInfo } from "../entities/creditCardInfo";
 import { User } from "../entities/user";
 
@@ -13,6 +16,6 @@ export async function createDatabaseConection() {
     logging: true,
     synchronize: true,
     migrations: [path.join(__dirname, "./../migrations/*")],
-    entities: [User, CreditCardInfo],
+    entities: [User, CreditCardInfo, Activity, Class, ActivityPricing],
   });
 }

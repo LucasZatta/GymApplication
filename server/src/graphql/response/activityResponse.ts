@@ -1,9 +1,9 @@
 import { Field, ObjectType } from "type-graphql";
-import { User } from "../../entities/user";
+import { Activity } from "../../entities/activity";
 import { BaseResponse } from "./baseResponse";
 
 @ObjectType()
-export class UserResponse extends BaseResponse {
+export class ActivityResponse extends BaseResponse {
   @Field({ nullable: true })
-  user?: User;
+  activity?: Activity;
 }

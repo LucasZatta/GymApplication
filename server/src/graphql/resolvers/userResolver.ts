@@ -16,8 +16,7 @@ export class UserResolver {
   async user(@Arg("id", () => Int) id: number): Promise<User | undefined> {
     return User.findOne({ id });
   }
-  //hash
-  //verify
+
   @Mutation(() => UserResponse)
   async insertUser(
     @Arg("data", () => UserInput) data: UserInput
@@ -28,10 +27,7 @@ export class UserResolver {
       .createQueryBuilder("u")
       .where("u.username = :username", { username: data.username })
       .getOne();
-    if (selectedUsername)
-      return {
-        errorMessage: "Nome de usuário já existe",
-      };
+    if (selectedUsername) return { errorMessage: "Nome de usuário já existe" };
 
     const selectedSocialSecurity = await getConnection()
       .getRepository(User)
@@ -40,10 +36,7 @@ export class UserResolver {
         socialSecurity: data.socialSecurity,
       })
       .getOne();
-    if (selectedSocialSecurity)
-      return {
-        errorMessage: "CPF já existente",
-      };
+    if (selectedSocialSecurity) return { errorMessage: "CPF já existente" };
 
     const hashedPassword = await argon2.hash(data.password);
 
@@ -56,9 +49,7 @@ export class UserResolver {
     ).raw[0].id;
 
     const newUser = await User.findOne(userId);
-    return {
-      user: newUser,
-    };
+    return { user: newUser };
   }
 
   @Mutation(() => UserResponse)
@@ -70,18 +61,13 @@ export class UserResolver {
       .createQueryBuilder("u")
       .where("u.username = :username", { username: data.username })
       .getOne();
-    if (!user)
-      return {
-        errorMessage: "Nome de usuário nāo existe",
-      };
+    if (!user) return { errorMessage: "Nome de usuário nāo existe" };
 
     const validPassword = await argon2.verify(user.password, data.password);
-    if (!validPassword)
-      return {
-        errorMessage: "Invalid password",
-      };
-    return {
-      user,
-    };
+    if (!validPassword) return { errorMessage: "Senha invalida" };
+
+    //set session info
+
+    return { user };
   }
 }
