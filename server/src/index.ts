@@ -1,11 +1,17 @@
 import { ApolloServer } from "apollo-server-express";
+import cookieParser from "cookie-parser";
 import express from "express";
+import { refreshToken } from "./auth/auth";
 import { createDatabaseConection } from "./config/database";
 import { buildGraphQLSchema } from "./config/schema";
 
 const main = async () => {
   const conn = await createDatabaseConection();
+  //await conn.runMigrations()
   //await conn.dropDatabase();
+  const app = express();
+  app.use(cookieParser());
+  app.post("/refresh_token", refreshToken);
   const apolloServer = new ApolloServer({
     schema: await buildGraphQLSchema(),
     context: ({ req, res }) => ({ req, res }),
@@ -17,5 +23,4 @@ const main = async () => {
     console.log("server on");
   });
 };
-const app = express();
 main().catch((err) => console.log("error: ", err));

@@ -1,10 +1,10 @@
 import { registerEnumType } from "type-graphql";
 
 export enum UserType {
-  Secretary = 0,
-  Teacher = 1,
-  Doctor = 2,
-  Costumer = 3,
+  Secretary = "SECRETARY",
+  Teacher = "TEACHER",
+  Doctor = "DOCTOR",
+  Costumer = "COSTUMER",
 }
 
 registerEnumType(UserType, {

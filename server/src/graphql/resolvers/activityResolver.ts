@@ -1,4 +1,4 @@
-import { Arg, Int, Mutation, Query, Resolver } from "type-graphql";
+import { Arg, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
 import { getConnection } from "typeorm";
 import { Activity } from "../../entities/activity";
 import { ActivityPricing } from "../../entities/activityPricing";
@@ -10,6 +10,7 @@ import { ActivityResponse } from "../response/activityResponse";
 @Resolver()
 export class ActivityResolver {
   @Query(() => [Activity])
+  @Authorized()
   async activities(): Promise<Activity[]> {
     return getConnection()
       .getRepository(Activity)
@@ -19,6 +20,7 @@ export class ActivityResolver {
   }
 
   @Query(() => Activity)
+  @Authorized()
   async activity(
     @Arg("id", () => Int) id: number
   ): Promise<Activity | undefined> {
@@ -31,6 +33,7 @@ export class ActivityResolver {
   }
 
   @Mutation(() => ActivityResponse)
+  @Authorized()
   async insertActivity(
     @Arg("data", () => ActivityInput) data: ActivityInput
   ): Promise<ActivityResponse> {
@@ -66,6 +69,7 @@ export class ActivityResolver {
   }
 
   @Mutation(() => ActivityResponse)
+  @Authorized()
   async insertClasses(
     @Arg("data", () => [ClassInput]) data: ClassInput[],
     @Arg("id", () => Int) id: number
@@ -136,6 +140,7 @@ export class ActivityResolver {
   }
 
   @Mutation(() => ActivityResponse)
+  @Authorized()
   async insertActivitiesPricing(
     @Arg("data", () => [PricingInput]) data: PricingInput[],
     @Arg("id", () => Int) id: number

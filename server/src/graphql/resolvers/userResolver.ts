@@ -1,23 +1,39 @@
 import argon2 from "argon2";
-import { Arg, Int, Mutation, Query, Resolver } from "type-graphql";
+import {
+  Arg,
+  Authorized,
+  Ctx,
+  Int,
+  Mutation,
+  Query,
+  Resolver,
+} from "type-graphql";
 import { getConnection } from "typeorm";
+import { createAccessToken, setRefreshToken } from "../../auth/jwt";
+import { UserType } from "../../entities/enums/userTypes";
 import { User } from "../../entities/user";
+import { GymContext } from "../../gymContext";
 import { UserInput } from "../input/userInput";
+import { UserLogin } from "../input/userLogin";
+import { LoginResponse } from "../response/loginResponse";
 import { UserResponse } from "../response/userResponse";
 
 @Resolver()
 export class UserResolver {
   @Query(() => [User])
+  @Authorized()
   async users(): Promise<User[]> {
     return User.find();
   }
 
   @Query(() => User)
+  @Authorized()
   async user(@Arg("id", () => Int) id: number): Promise<User | undefined> {
     return User.findOne({ id });
   }
 
   @Mutation(() => UserResponse)
+  @Authorized(UserType.Secretary)
   async insertUser(
     @Arg("data", () => UserInput) data: UserInput
   ): Promise<UserResponse> {
@@ -52,22 +68,32 @@ export class UserResolver {
     return { user: newUser };
   }
 
-  @Mutation(() => UserResponse)
+  @Query(() => User, { nullable: true })
+  @Authorized()
+  async me(@Ctx() { payload }: GymContext): Promise<User | undefined> {
+    return User.findOne(payload?.userId);
+  }
+
+  @Mutation(() => LoginResponse)
   async login(
-    @Arg("data", () => UserInput) data: UserInput
-  ): Promise<UserResponse> {
+    @Arg("login", () => UserLogin) login: UserLogin,
+    @Ctx() { res }: GymContext
+  ): Promise<LoginResponse> {
     const user = await getConnection()
       .getRepository(User)
       .createQueryBuilder("u")
-      .where("u.username = :username", { username: data.username })
+      .where("u.username = :username", { username: login.username })
       .getOne();
-    if (!user) return { errorMessage: "Nome de usuário nāo existe" };
+    if (!user)
+      return { accessToken: "", errorMessage: "Nome de usuário nāo existe" };
 
-    const validPassword = await argon2.verify(user.password, data.password);
-    if (!validPassword) return { errorMessage: "Senha invalida" };
+    const validPassword = await argon2.verify(user.password, login.password);
+    if (!validPassword)
+      return { accessToken: "", errorMessage: "Senha invalida" };
 
     //set session info
+    setRefreshToken(res, user);
 
-    return { user };
+    return { accessToken: createAccessToken(user) };
   }
 }
