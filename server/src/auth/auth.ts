@@ -3,7 +3,7 @@ import { verify } from "jsonwebtoken";
 import { AuthChecker } from "type-graphql";
 import { User } from "../entities/user";
 import { GymContext } from "../gymContext";
-import { createAccessToken, setRefreshToken } from "./jwt";
+import { createAccessToken, createRefreshToken } from "./jwt";
 
 export const isAuth: AuthChecker<GymContext> = ({ context }, roles) => {
   const auth = context.req.headers["authorization"];
@@ -23,6 +23,10 @@ export const isAuth: AuthChecker<GymContext> = ({ context }, roles) => {
   }
 
   return true;
+};
+
+export const setRefreshToken = (res: Response, user: User) => {
+  res.cookie("gymCookie", createRefreshToken(user), { httpOnly: true });
 };
 
 export const refreshToken = async (req: Request, res: Response) => {

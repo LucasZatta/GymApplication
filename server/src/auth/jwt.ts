@@ -1,4 +1,3 @@
-import { Response } from "express";
 import { sign } from "jsonwebtoken";
 import { User } from "../entities/user";
 
@@ -20,8 +19,4 @@ export const createRefreshToken = (user: User) => {
       expiresIn: "7d",
     }
   );
-};
-
-export const setRefreshToken = (res: Response, user: User) => {
-  res.cookie("gymCookie", createRefreshToken(user), { httpOnly: true });
 };

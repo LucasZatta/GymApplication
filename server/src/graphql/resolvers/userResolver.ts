@@ -9,7 +9,8 @@ import {
   Resolver,
 } from "type-graphql";
 import { getConnection } from "typeorm";
-import { createAccessToken, setRefreshToken } from "../../auth/jwt";
+import { setRefreshToken } from "../../auth/auth";
+import { createAccessToken } from "../../auth/jwt";
 import { UserType } from "../../entities/enums/userTypes";
 import { User } from "../../entities/user";
 import { GymContext } from "../../gymContext";
@@ -37,7 +38,6 @@ export class UserResolver {
   async insertUser(
     @Arg("data", () => UserInput) data: UserInput
   ): Promise<UserResponse> {
-    console.log(data);
     const selectedUsername = await getConnection()
       .getRepository(User)
       .createQueryBuilder("u")
