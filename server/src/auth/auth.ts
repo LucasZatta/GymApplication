@@ -10,11 +10,10 @@ export const isAuth: AuthChecker<GymContext> = ({ context }, roles) => {
   if (!auth) throw new Error("Nāo autorizado");
   try {
     const token = auth.split(" ")[1];
-    console.log(token);
     const payload = verify(token, process.env.ACCESS_TOKEN_SECRET!);
     context.payload = payload as any;
   } catch (err) {
-    console.log("err: ", err);
+    console.log("error: ", err);
     throw new Error("Nāo autorizado");
   }
 
@@ -37,7 +36,7 @@ export const refreshToken = async (req: Request, res: Response) => {
   try {
     payload = verify(auth, process.env.REFRESH_TOKEN_SECRET!);
   } catch (error) {
-    console.log("err: ", error);
+    console.log("error: ", error);
     return res.send({ ok: false, accessToken: "" });
   }
 

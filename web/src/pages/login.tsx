@@ -36,7 +36,6 @@ const login: React.FC<loginProps> = ({}) => {
               login: values,
             },
           });
-          console.log(res.data?.login.accessToken);
           if (res && res.data) {
             if (res.data.login.accessToken)
               setAccessToken(res.data.login.accessToken);

@@ -71,7 +71,6 @@ export class UserResolver {
   @Query(() => User, { nullable: true })
   @Authorized()
   async me(@Ctx() { payload }: GymContext): Promise<User | undefined> {
-    console.log("teste2");
     return User.findOne(payload?.userId);
   }
 
