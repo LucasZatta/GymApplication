@@ -8,17 +8,17 @@ import { createAccessToken, createRefreshToken } from "./jwt";
 export const isAuth: AuthChecker<GymContext> = ({ context }, roles) => {
   const auth = context.req.headers["authorization"];
   if (!auth) throw new Error("Nāo autorizado");
-
   try {
     const token = auth.split(" ")[1];
-    const payload = verify(token, process.env.REFRESH_TOKEN_SECRET!);
+    console.log(token);
+    const payload = verify(token, process.env.ACCESS_TOKEN_SECRET!);
     context.payload = payload as any;
   } catch (err) {
     console.log("err: ", err);
     throw new Error("Nāo autorizado");
   }
 
-  if (roles !== [] && roles !== undefined) {
+  if (roles.length > 0) {
     return roles.find((x) => x === context.payload?.userType) !== undefined;
   }
 

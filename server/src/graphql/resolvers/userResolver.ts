@@ -22,7 +22,7 @@ import { UserResponse } from "../response/userResponse";
 @Resolver()
 export class UserResolver {
   @Query(() => [User])
-  @Authorized()
+  //@Authorized()
   async users(): Promise<User[]> {
     return User.find();
   }
@@ -71,6 +71,7 @@ export class UserResolver {
   @Query(() => User, { nullable: true })
   @Authorized()
   async me(@Ctx() { payload }: GymContext): Promise<User | undefined> {
+    console.log("teste2");
     return User.findOne(payload?.userId);
   }
 
