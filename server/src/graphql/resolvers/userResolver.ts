@@ -20,9 +20,10 @@ import { LoginResponse } from "../response/loginResponse";
 import { UserResponse } from "../response/userResponse";
 
 @Resolver()
+//Dont forget to uncoment authorized
 export class UserResolver {
   @Query(() => [User])
-  //@Authorized()
+  @Authorized()
   async users(): Promise<User[]> {
     return User.find();
   }

@@ -8,6 +8,7 @@ import { ClassInput } from "../input/classInput";
 import { ActivityResponse } from "../response/activityResponse";
 
 @Resolver()
+//Dont forget to uncoment authorized
 export class ActivityResolver {
   @Query(() => [Activity])
   @Authorized()
