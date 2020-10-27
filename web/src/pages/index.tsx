@@ -1,6 +1,9 @@
+import { Button, Divider, Layout } from "antd";
 import { useRouter } from "next/dist/client/router";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Wrapper } from "../components/wraper";
 import { useMeLazyQuery } from "../generated/graphql";
+const { Content } = Layout;
 
 const Index = () => {
   const router = useRouter();
@@ -17,17 +20,44 @@ const Index = () => {
   if (loadPage) return <div>loading</div>;
   if (error)
     return (
-      <div>
-        {error.message}{" "}
-        <button onClick={() => router.push("/login")}>login</button>
-      </div>
+      <Wrapper>
+        <Content
+          style={{
+            marginTop: "1em",
+            marginBottom: "1em",
+            maxWidth: "90%",
+            marginLeft: "auto",
+            marginRight: "auto",
+          }}
+        >
+          <div>{error.message} </div>
+          <Button type="primary" onClick={() => router.push("/login")}>
+            Login
+          </Button>
+        </Content>
+      </Wrapper>
     );
   return (
-    <div>
-      <div>home</div>
-      <button onClick={() => router.push("/register")}>register</button>
-      {data && !loading ? <div> {data.me?.name}</div> : null}
-    </div>
+    <Wrapper>
+      <Content
+        style={{
+          marginTop: "1em",
+          marginBottom: "1em",
+          maxWidth: "90%",
+          marginLeft: "auto",
+          marginRight: "auto",
+        }}
+      >
+        <Divider>
+          <div>
+            Olá, {data && !loading ? <div> {data.me?.name}</div> : null}
+          </div>
+        </Divider>
+        <Button type="primary" onClick={() => router.push("/register")}>
+          Cadastrar Usuário
+        </Button>
+      </Content>
+    </Wrapper>
   );
 };
 

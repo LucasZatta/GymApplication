@@ -1,3 +1,4 @@
+import { Input } from "antd";
 import { useField } from "formik";
 import React, { InputHTMLAttributes } from "react";
 
@@ -15,7 +16,7 @@ export const InputField: React.FC<InputFieldProps> = ({
   return (
     <div>
       <label htmlFor={field.name}>{label}</label>
-      <input {...field} {...props} id={field.name} />
+      <Input {...field} {...props} id={field.name} />
       {error ? <div>{error}</div> : null}
     </div>
   );

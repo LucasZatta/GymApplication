@@ -1,9 +1,14 @@
+import { Button, Col, Divider, Layout, Row, Select } from "antd";
 import { Form, Formik } from "formik";
 import { useRouter } from "next/dist/client/router";
 import React, { useState } from "react";
 import * as Yup from "yup";
 import { InputField } from "../components/inputField";
+import { Wrapper } from "../components/wraper";
 import { useRegisterMutation, UserType } from "../generated/graphql";
+
+const { Option } = Select;
+const { Content } = Layout;
 
 interface registerProps {}
 
@@ -29,8 +34,9 @@ const register: React.FC<registerProps> = ({}) => {
   const [userType, setUserType] = useState<string>(UserType.Costumer);
   const [register] = useRegisterMutation();
   return (
-    <div>
-      <div>register</div>
+    <Wrapper>
+      <Divider orientation="left">Cadastrar Usuário</Divider>
+
       <Formik
         validationSchema={RegisterSchema}
         validateOnBlur={false}
@@ -59,54 +65,90 @@ const register: React.FC<registerProps> = ({}) => {
       >
         {({ isSubmitting }) => (
           <Form>
-            <InputField
-              name="name"
-              placeholder="Informe o nome"
-              label="Nome"
-              type="name"
-            />
-            <InputField
-              name="socialSecurity"
-              placeholder="Informe o CPF"
-              label="CPF"
-              type="textarea"
-            />
-            <InputField
-              name="birthDate"
-              placeholder="Informe a data de nascimento"
-              label="Data de Nascimento"
-              type="date"
-            />
-            <InputField
-              name="username"
-              placeholder="Informe o nome de usuário"
-              label="Usuário"
-              type="username"
-            />
-            <InputField
-              name="password"
-              placeholder="Informe a senha"
-              label="Senha"
-              type="password"
-            />
-            <div>
-              <label>Tipo de usuário</label>
+            <Content
+              style={{
+                marginTop: "1em",
+                maxWidth: "90%",
+                marginLeft: "auto",
+                marginRight: "auto",
+              }}
+            >
+              <InputField
+                name="name"
+                placeholder="Informe o nome"
+                label="Nome"
+                type="name"
+              />
+              <InputField
+                name="socialSecurity"
+                placeholder="Informe o CPF"
+                label="CPF"
+                type="textarea"
+              />
+              <InputField
+                name="birthDate"
+                placeholder="Informe a data de nascimento"
+                label="Data de Nascimento"
+                type="date"
+              />
+              <InputField
+                name="username"
+                placeholder="Informe o nome de usuário"
+                label="Usuário"
+                type="username"
+              />
+              <InputField
+                name="password"
+                placeholder="Informe a senha"
+                label="Senha"
+                type="password"
+              />
+              <div>
+                <label>Tipo de usuário</label>
 
-              <select onChange={(ev) => setUserType(ev.target.value)}>
-                <option value={UserType.Costumer}>Cliente</option>
-                <option value={UserType.Doctor}>Médico</option>
-                <option value={UserType.Secretary}>Secretária</option>
-                <option value={UserType.Teacher}>Instrutor</option>
-              </select>
-            </div>
-            <button disabled={isSubmitting} type="submit">
-              cadastrar
-            </button>
-            <button onClick={() => router.push("/")}>home</button>
+                <Select
+                  style={{ width: 120 }}
+                  defaultValue={UserType.Costumer}
+                  onChange={(value) => setUserType(value.toString())}
+                >
+                  <Option value={UserType.Costumer}>Cliente</Option>
+                  <Option value={UserType.Doctor}>Médico</Option>
+                  <Option value={UserType.Secretary}>Secretária</Option>
+                  <Option value={UserType.Teacher}>Instrutor</Option>
+                </Select>
+              </div>
+            </Content>
+
+            <Row
+              style={{
+                marginTop: "2rem",
+                marginBottom: "2rem",
+              }}
+            >
+              <Col offset={2} span={8}>
+                <Button
+                  block={true}
+                  type="primary"
+                  loading={isSubmitting}
+                  htmlType="submit"
+                >
+                  Cadastrar
+                </Button>
+              </Col>
+              <Col offset={4} span={8}>
+                <Button
+                  block={true}
+                  type="default"
+                  onClick={() => router.push("/")}
+                >
+                  Home
+                </Button>
+              </Col>
+            </Row>
           </Form>
         )}
       </Formik>
-    </div>
+    </Wrapper>
   );
 };
 

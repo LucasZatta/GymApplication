@@ -11,6 +11,7 @@ import JwtDecode from "jwt-decode";
 import { AppProps } from "next/app";
 import React from "react";
 import { fetchToken, getAccessToken, setAccessToken } from "../auth";
+import "./../index.css";
 
 const authLink = setContext((_, { headers }) => {
   // get the authentication token from local storage if it exists

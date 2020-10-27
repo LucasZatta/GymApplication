@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.2.2",
+    "antd": "^4.7.3",
     "apollo-link-token-refresh": "^0.3.2",
     "formik": "^2.1.7",
     "graphql": "^15.3.0",
