@@ -18,6 +18,10 @@ export class Exercise extends BasicEntity {
   @Column()
   reps: number;
 
+  @Field()
+  @Column()
+  exerciseFileId: number;
+
   @Field(() => ExerciseFile, { nullable: true })
   @ManyToOne(() => ExerciseFile, (exerciseFile) => exerciseFile.exercises)
   exerciseFile?: ExerciseFile;
