@@ -23,7 +23,7 @@ import { UserResponse } from "../response/userResponse";
 //Dont forget to uncoment authorized
 export class UserResolver {
   @Query(() => [User])
-  //@Authorized()
+  @Authorized()
   async users(): Promise<User[]> {
     return User.find();
   }
