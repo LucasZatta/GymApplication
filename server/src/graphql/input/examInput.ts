@@ -13,6 +13,9 @@ export class ExamInput {
   doctor: UserInput;
 
   @Field()
+  socialSecurity: string;
+
+  @Field()
   studentId: number;
 
   @Field(() => UserInput)

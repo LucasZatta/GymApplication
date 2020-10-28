@@ -10,7 +10,7 @@ import { ExerciseFileResponse } from "../response/exerciseFileResponse";
 //Dont forget to uncoment authorized
 export class ExerciseFileResolver {
   @Query(() => [ExerciseFile])
-  @Authorized()
+  @Authorized(UserType.Teacher)
   async exerciseFiles(
     @Arg("teacherId", () => Int) teacherId: number
   ): Promise<ExerciseFile[]> {
@@ -22,8 +22,21 @@ export class ExerciseFileResolver {
       .getMany();
   }
 
+  @Query(() => [ExerciseFile])
+  @Authorized(UserType.Costumer)
+  async exerciseFilesForCostumer(
+    @Arg("studentId", () => Int) studentId: number
+  ): Promise<ExerciseFile[]> {
+    return await getConnection()
+      .getRepository(ExerciseFile)
+      .createQueryBuilder("ef")
+      .leftJoinAndSelect("ef.exercises", "exercise")
+      .where('ef."studentId" = :id', { studentId })
+      .getMany();
+  }
+  
   @Query(() => ExerciseFile)
-  @Authorized()
+  @Authorized([UserType.Teacher,UserType.Costumer])
   async exerciseFile(
     @Arg("id", () => Int) id: number
   ): Promise<ExerciseFile | undefined> {

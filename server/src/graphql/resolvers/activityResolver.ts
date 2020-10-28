@@ -1,6 +1,7 @@
+import { Exam } from "src/entities/exam";
 import { User } from "src/entities/user";
 import { Arg, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
-import { getConnection } from "typeorm";
+import { getConnection, getRepository } from "typeorm";
 import { Activity } from "../../entities/activity";
 import { ActivityPricing } from "../../entities/activityPricing";
 import { Class } from "../../entities/class";
@@ -174,10 +175,28 @@ export class ActivityResolver {
 
   async checkIfActivtyExits(id: number): Promise<string | undefined> {
     const selectedActivity = await Activity.findOne(id);
-    if (!selectedActivity) return;
-    ("Nāo foi possível encontrar a atividade selecionada");
+    if (!selectedActivity) return ("Nāo foi possível encontrar a atividade selecionada");
 
     return undefined;
+  }
+
+  async checkIfIsAble(ssn: string): Promise<string | undefined> {
+    const selectedCostumerExam = await getConnection()
+      .getRepository(Exam)
+      .createQueryBuilder("ex")
+      .where('ex."socialSecurity" = :ssn', { ssn })
+      .orderBy('ex."createdAt"',"DESC")
+      .getOne();
+
+    if(!selectedCostumerExam) return ("Exame de cliente nao encontrado.");
+    if(!selectedCostumerExam.situation) return ("Cliente nao apto à realizar atividades.")
+
+    return undefined;
+  }
+
+  async checkVacancy(data: ClassInput): Promise<string | undefined>{
+    if(data.maxStudents == (data.students.length-1)) return ("Turma sem vagas.");
+    return;
   }
 
   @Mutation(() => ActivityResponse)
@@ -190,8 +209,13 @@ export class ActivityResolver {
     let errorMessage = await this.checkIfActivtyExits(classId);
     if ( errorMessage ) return { errorMessage };
 
-    //check vacancy
-    if(data.maxStudents == (data.students.length-1)) return {errorMessage: "Turma sem vagas."};
+    
+    let isAble = await this.checkIfIsAble(userData.socialSecurity);
+    if( isAble ) return { errorMessage : isAble };
+
+    let hasVacancy = await this.checkVacancy(data);
+    if( hasVacancy ) return { errorMessage : hasVacancy };
+    
     
     data.students.push(userData.socialSecurity);
     const activity = await Activity.findOne({ where: { classId } });

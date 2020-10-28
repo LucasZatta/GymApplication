@@ -12,6 +12,10 @@ export class Exam extends BasicEntity {
 
   @Field()
   @Column()
+  socialSecurity: string;
+
+  @Field()
+  @Column()
   doctorId: number;
 
   @Field(() => User, { nullable: true })

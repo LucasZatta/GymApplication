@@ -23,7 +23,7 @@ export class ExamResolver {
   }
 
   @Query(() => Exam)
-  @Authorized()
+  @Authorized([UserType.Doctor,UserType.Costumer])
   async exam(@Arg("id", () => Int) id: number): Promise<Exam | undefined> {
     return Exam.findOne({ id });
   }
