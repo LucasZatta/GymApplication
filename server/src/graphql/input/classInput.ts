@@ -1,11 +1,9 @@
-import { UserType } from "src/entities/enums/userTypes";
-import { Field, InputType, Int } from "type-graphql";
-import { UserInput } from "./userInput";
+import { Field, InputType } from "type-graphql";
 
 @InputType()
 export class ClassInput {
   @Field({ nullable: true })
-  activityId: number
+  activityId: number;
 
   @Field({ nullable: true })
   maxStudents: number;
@@ -13,7 +11,6 @@ export class ClassInput {
   @Field({ nullable: true })
   classTime: string;
 
-  @Field(() => [String],{ nullable: true })
+  @Field(() => [String], { nullable: true })
   students: string[];
-
 }

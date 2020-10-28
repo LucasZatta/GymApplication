@@ -1,10 +1,9 @@
-import { Exam } from "src/entities/exam";
-import { User } from "src/entities/user";
 import { Arg, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
-import { getConnection, getRepository } from "typeorm";
+import { getConnection } from "typeorm";
 import { Activity } from "../../entities/activity";
 import { ActivityPricing } from "../../entities/activityPricing";
 import { Class } from "../../entities/class";
+import { Exam } from "../../entities/exam";
 import { ActivityInput, PricingInput } from "../input/activityInput";
 import { ClassInput } from "../input/classInput";
 import { UserInput } from "../input/userInput";
@@ -175,7 +174,8 @@ export class ActivityResolver {
 
   async checkIfActivtyExits(id: number): Promise<string | undefined> {
     const selectedActivity = await Activity.findOne(id);
-    if (!selectedActivity) return ("Nāo foi possível encontrar a atividade selecionada");
+    if (!selectedActivity)
+      return "Nāo foi possível encontrar a atividade selecionada";
 
     return undefined;
   }
@@ -185,46 +185,44 @@ export class ActivityResolver {
       .getRepository(Exam)
       .createQueryBuilder("ex")
       .where('ex."socialSecurity" = :ssn', { ssn })
-      .orderBy('ex."createdAt"',"DESC")
+      .orderBy('ex."createdAt"', "DESC")
       .getOne();
 
-    if(!selectedCostumerExam) return ("Exame de cliente nao encontrado.");
-    if(!selectedCostumerExam.situation) return ("Cliente nao apto à realizar atividades.")
+    if (!selectedCostumerExam) return "Exame de cliente nao encontrado.";
+    if (!selectedCostumerExam.situation)
+      return "Cliente nao apto à realizar atividades.";
 
     return undefined;
   }
 
-  async checkVacancy(data: ClassInput): Promise<string | undefined>{
-    if(data.maxStudents == (data.students.length-1)) return ("Turma sem vagas.");
+  async checkVacancy(data: ClassInput): Promise<string | undefined> {
+    if (data.maxStudents == data.students.length - 1) return "Turma sem vagas.";
     return;
   }
 
   @Mutation(() => ActivityResponse)
   @Authorized()
   async insertStudent(
-    @Arg("userData", () => UserInput) userData : UserInput,
-    @Arg("data", () => ClassInput) data : ClassInput,
-    @Arg("classId", () => Int) classId : number
-  ): Promise<ActivityResponse>{
+    @Arg("userData", () => UserInput) userData: UserInput,
+    @Arg("data", () => ClassInput) data: ClassInput,
+    @Arg("classId", () => Int) classId: number
+  ): Promise<ActivityResponse> {
     let errorMessage = await this.checkIfActivtyExits(classId);
-    if ( errorMessage ) return { errorMessage };
+    if (errorMessage) return { errorMessage };
 
-    
     let isAble = await this.checkIfIsAble(userData.socialSecurity);
-    if( isAble ) return { errorMessage : isAble };
+    if (isAble) return { errorMessage: isAble };
 
     let hasVacancy = await this.checkVacancy(data);
-    if( hasVacancy ) return { errorMessage : hasVacancy };
-    
-    
+    if (hasVacancy) return { errorMessage: hasVacancy };
+
     data.students.push(userData.socialSecurity);
     const activity = await Activity.findOne({ where: { classId } });
-    if (!activity) return {errorMessage: " Atividade não encontrada."};
-    
+    if (!activity) return { errorMessage: " Atividade não encontrada." };
+
     Object.assign(activity, data);
     await activity.save();
 
-    return {activity : activity};
-    
+    return { activity: activity };
   }
 }
