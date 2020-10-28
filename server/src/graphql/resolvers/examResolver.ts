@@ -1,13 +1,5 @@
-import argon2 from "argon2";
-import { UserType } from "src/entities/enums/userTypes";
-import {
-  Arg,
-  Authorized,
-  Int,
-  Mutation,
-  Query,
-  Resolver,
-} from "type-graphql";
+import { Arg, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
+import { UserType } from "../../entities/enums/userTypes";
 import { Exam } from "../../entities/exam";
 import { ExamInput } from "../input/examInput";
 import { UpdateExamInput } from "../input/updateExamInput";
@@ -28,15 +20,18 @@ export class ExamResolver {
 
   @Authorized(UserType.Doctor)
   @Mutation(() => Exam)
-  async createExam(@Arg("data") data: ExamInput){
-      const exam = Exam.create(data);
-      await exam.save();
-      return exam;
+  async createExam(@Arg("data") data: ExamInput) {
+    const exam = Exam.create(data);
+    await exam.save();
+    return exam;
   }
 
   @Authorized(UserType.Doctor)
   @Mutation(() => Exam)
-  async updateExam(@Arg("id", () => Int) id: number, @Arg("data") data: UpdateExamInput) {
+  async updateExam(
+    @Arg("id", () => Int) id: number,
+    @Arg("data") data: UpdateExamInput
+  ) {
     const exam = await Exam.findOne({ where: { id } });
     if (!exam) throw new Error("Exam not found!");
     Object.assign(exam, data);
@@ -46,11 +41,11 @@ export class ExamResolver {
 
   @Authorized(UserType.Doctor)
   @Mutation(() => Boolean)
-  async deleteExam(@Arg("id", () => Int) id: number){
-      const exam = await Exam.findOne({ where: { id } });
-      if(!exam) throw new Error("Exam not found!");
-      await exam.remove();
+  async deleteExam(@Arg("id", () => Int) id: number) {
+    const exam = await Exam.findOne({ where: { id } });
+    if (!exam) throw new Error("Exam not found!");
+    await exam.remove();
 
-      return true;
+    return true;
   }
 }
