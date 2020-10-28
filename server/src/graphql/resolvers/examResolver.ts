@@ -1,6 +1,8 @@
-//import argon2 from "argon2";
+import argon2 from "argon2";
+import { UserType } from "src/entities/enums/userTypes";
 import {
   Arg,
+  Authorized,
   Int,
   Mutation,
   Query,
@@ -24,6 +26,7 @@ export class ExamResolver {
     return Exam.findOne({ id });
   }
 
+  @Authorized(UserType.Doctor)
   @Mutation(() => Exam)
   async createExam(@Arg("data") data: ExamInput){
       const exam = Exam.create(data);
@@ -31,6 +34,7 @@ export class ExamResolver {
       return exam;
   }
 
+  @Authorized(UserType.Doctor)
   @Mutation(() => Exam)
   async updateExam(@Arg("id", () => Int) id: number, @Arg("data") data: UpdateExamInput) {
     const exam = await Exam.findOne({ where: { id } });
@@ -40,6 +44,7 @@ export class ExamResolver {
     return exam;
   }
 
+  @Authorized(UserType.Doctor)
   @Mutation(() => Boolean)
   async deleteExam(@Arg("id", () => Int) id: number){
       const exam = await Exam.findOne({ where: { id } });
