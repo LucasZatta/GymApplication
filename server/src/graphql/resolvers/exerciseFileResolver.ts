@@ -11,8 +11,15 @@ import { ExerciseFileResponse } from "../response/exerciseFileResponse";
 export class ExerciseFileResolver {
   @Query(() => [ExerciseFile])
   @Authorized()
-  async exerciseFiles(): Promise<ExerciseFile[]> {
-    return ExerciseFile.find();
+  async exerciseFiles(
+    @Arg("teacherId", () => Int) teacherId: number
+  ): Promise<ExerciseFile[]> {
+    return await getConnection()
+      .getRepository(ExerciseFile)
+      .createQueryBuilder("ef")
+      .leftJoinAndSelect("ef.exercises", "exercise")
+      .where('ef."teacherId" = :id', { teacherId })
+      .getMany();
   }
 
   @Query(() => ExerciseFile)
@@ -41,7 +48,7 @@ export class ExerciseFileResolver {
       .getRepository(ExerciseFile)
       .createQueryBuilder("ef")
       .leftJoinAndSelect("ef.exercises", "exercise")
-      .where("a.id = :id", { exerciseId })
+      .where("ef.id = :id", { exerciseId })
       .getOne();
     return { exerciseFile: newExerciseFile };
   }
@@ -74,7 +81,7 @@ export class ExerciseFileResolver {
       .getRepository(ExerciseFile)
       .createQueryBuilder("ef")
       .leftJoinAndSelect("ef.exercises", "exercise")
-      .where("a.id = :id", { exerciseId })
+      .where("ef.id = :id", { exerciseId })
       .getOne();
     return { exerciseFile: updatedExerciseFile };
   }
