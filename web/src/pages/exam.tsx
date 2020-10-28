@@ -1,24 +1,26 @@
 import { Divider, Table } from "antd";
 import React, { useEffect, useState } from "react";
 import { Wrapper } from "../components/wraper";
+import { BMILevels } from "../enums/bmiLevels";
 import { useMeLazyQuery } from "../generated/graphql";
 
-const calculateIMC = (height: number, weight: number): number => weight / (height * height);
+const calculateIMC = (height: number, weight: number): number =>
+  weight / (height * height);
 
 const getImcStatus = (imc: number): string => {
-  return imc < 14.9
+  return imc < BMILevels.SevereThinness
     ? "Extremamente abaixo do peso"
-    : imc < 15.9
+    : imc < BMILevels.ModerateThinness
     ? "Gravemente abaixo do peso"
-    : imc < 18.5
+    : imc < BMILevels.MildThinness
     ? "Abaixo do peso ideal"
-    : imc < 24.9
+    : imc < BMILevels.Normal
     ? "Faixa de peso ideal"
-    : imc < 29.9
+    : imc < BMILevels.PreObese
     ? "Sobrepeso"
-    : imc < 34.9
+    : imc < BMILevels.Overweight
     ? "Obesidade grau I"
-    : imc < 39.9
+    : imc < BMILevels.ObeseClassII
     ? "Obesidade grau II (grave)"
     : "Obesidade grau III (mórbida)";
 };
@@ -75,7 +77,8 @@ const exam: React.FC<examProps> = ({}) => {
     {
       title: "Status",
       key: "status",
-      render: (tData: any) => getImcStatus(calculateIMC(tData.height, tData.weight)),
+      render: (tData: any) =>
+        getImcStatus(calculateIMC(tData.height, tData.weight)),
     },
     {
       title: "Altura",
