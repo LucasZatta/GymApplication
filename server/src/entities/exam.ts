@@ -1,7 +1,6 @@
 import { Field, ObjectType } from "type-graphql";
-import { Column, Entity, JoinColumn, OneToMany, OneToOne } from "typeorm";
+import { Column, Entity, JoinColumn, OneToOne } from "typeorm";
 import { BasicEntity } from "./basicEntity";
-import { Exercise } from "./exercise";
 import { User } from "./user";
 
 @Entity()
@@ -36,11 +35,11 @@ export class Exam extends BasicEntity {
   @Field()
   @Column()
   artPressure: number;
-  
+
   @Field()
   @Column()
   weight: number;
-  
+
   @Field()
   @Column()
   height: number;
@@ -60,5 +59,4 @@ export class Exam extends BasicEntity {
   @Field()
   @Column()
   situation: boolean;
-
 }

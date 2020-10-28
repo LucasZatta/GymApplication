@@ -80,6 +80,6 @@ export class ExamResolver {
       if(!exam) throw new Error("Exam not found!");
       await exam.remove();
 
-      return true;
+    return true;
   }
 }

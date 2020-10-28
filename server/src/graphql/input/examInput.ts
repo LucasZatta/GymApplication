@@ -1,45 +1,44 @@
-import { User } from "src/entities/user";
-import { InputType, Field } from "type-graphql";
+import { Field, InputType } from "type-graphql";
+import { UserInput } from "./userInput";
 
 @InputType()
 export class ExamInput {
-    @Field()
-    name: string;
+  @Field()
+  name: string;
 
-    @Field()
-    doctorId: number;
+  @Field()
+  doctorId: number;
 
-    @Field(() => User)
-    doctor: User;
+  @Field(() => UserInput)
+  doctor: UserInput;
 
-    @Field()
-    studentId: number;
+  @Field()
+  studentId: number;
 
-    @Field(() => User)
-    student: User;
+  @Field(() => UserInput)
+  student: UserInput;
 
-    @Field()
-    cardioFreq: number;
+  @Field()
+  cardioFreq: number;
 
-    @Field()
-    artPressure: number;
+  @Field()
+  artPressure: number;
 
-    @Field()
-    weight: number;
+  @Field()
+  weight: number;
 
-    @Field()
-    height: number;
+  @Field()
+  height: number;
 
-    @Field()
-    fatPercentual: number;
+  @Field()
+  fatPercentual: number;
 
-    @Field()
-    fitMassPercentual: number;
+  @Field()
+  fitMassPercentual: number;
 
-    @Field()
-    imc: number;
+  @Field()
+  imc: number;
 
-    @Field()
-    situation: boolean;
-    
+  @Field()
+  situation: boolean;
 }
