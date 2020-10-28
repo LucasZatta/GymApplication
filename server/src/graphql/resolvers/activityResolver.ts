@@ -193,7 +193,7 @@ export class ActivityResolver {
     //check vacancy
     if(data.maxStudents == (data.students.length-1)) return {errorMessage: "Turma sem vagas."};
     
-    data.students.push(userData);
+    data.students.push(userData.socialSecurity);
     const activity = await Activity.findOne({ where: { classId } });
     if (!activity) return {errorMessage: " Atividade não encontrada."};
     

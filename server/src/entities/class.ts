@@ -19,7 +19,7 @@ export class Class extends BaseEntity {
 
   @Column({ default: [] , array: true})
   @Field()
-  students: User[];
+  students: string[];
 
   @Column()
   @Field()
