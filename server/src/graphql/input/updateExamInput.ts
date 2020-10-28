@@ -3,6 +3,7 @@ import { InputType, Field } from "type-graphql";
 
 @InputType()
 export class UpdateExamInput {
+
     @Field({ nullable: true })
     name: string;
 
