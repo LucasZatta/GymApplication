@@ -63,4 +63,6 @@ export class Exam extends BasicEntity {
   @Field()
   @Column()
   situation: boolean;
+
+  //idk
 }
