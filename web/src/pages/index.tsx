@@ -1,8 +1,9 @@
-import { Button, Divider, Layout } from "antd";
+import { Button, Divider, Layout, Modal } from "antd";
 import { useRouter } from "next/dist/client/router";
 import React, { useEffect, useState } from "react";
 import { Wrapper } from "../components/wraper";
 import { useMeLazyQuery } from "../generated/graphql";
+import Login from "./login";
 const { Content } = Layout;
 
 const Index = () => {
@@ -12,6 +13,7 @@ const Index = () => {
     fetchPolicy: "network-only",
   });
   const [loadPage, setPageLoading] = useState(false);
+  const [loginModalVisible, setLoginModalVisible] = useState<boolean>(false);
   useEffect(() => {
     me();
     setPageLoading(false);
@@ -31,10 +33,14 @@ const Index = () => {
           }}
         >
           <div>{error.message} </div>
-          <Button type="primary" onClick={() => router.push("/login")}>
+          <Button type="primary" onClick={() => setLoginModalVisible(!loginModalVisible)}>
             Login
           </Button>
         </Content>
+
+        <Modal title="Login" visible={loginModalVisible} onCancel={() => setLoginModalVisible(false)} footer={null}>
+          <Login />
+        </Modal>
       </Wrapper>
     );
   return (
@@ -49,9 +55,7 @@ const Index = () => {
         }}
       >
         <Divider>
-          <div>
-            Olá, {data && !loading ? <div> {data.me?.name}</div> : null}
-          </div>
+          <div>Olá, {data && !loading ? <div> {data.me?.name}</div> : null}</div>
         </Divider>
         <Button type="primary" onClick={() => router.push("/register")}>
           Cadastrar Usuário
