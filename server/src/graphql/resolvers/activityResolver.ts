@@ -1,3 +1,4 @@
+import { User } from "src/entities/user";
 import { Arg, Authorized, Int, Mutation, Query, Resolver } from "type-graphql";
 import { getConnection } from "typeorm";
 import { Activity } from "../../entities/activity";
@@ -5,6 +6,7 @@ import { ActivityPricing } from "../../entities/activityPricing";
 import { Class } from "../../entities/class";
 import { ActivityInput, PricingInput } from "../input/activityInput";
 import { ClassInput } from "../input/classInput";
+import { UserInput } from "../input/userInput";
 import { ActivityResponse } from "../response/activityResponse";
 
 @Resolver()
@@ -176,5 +178,29 @@ export class ActivityResolver {
     ("Nāo foi possível encontrar a atividade selecionada");
 
     return undefined;
+  }
+
+  @Mutation(() => ActivityResponse)
+  @Authorized()
+  async insertStudent(
+    @Arg("userData", () => UserInput) userData : UserInput,
+    @Arg("data", () => ClassInput) data : ClassInput,
+    @Arg("classId", () => Int) classId : number
+  ): Promise<ActivityResponse>{
+    let errorMessage = await this.checkIfActivtyExits(classId);
+    if ( errorMessage ) return { errorMessage };
+
+    //check vacancy
+    if(data.maxStudents == (data.students.length-1)) return {errorMessage: "Turma sem vagas."};
+    
+    data.students.push(userData);
+    const activity = await Activity.findOne({ where: { classId } });
+    if (!activity) return {errorMessage: " Atividade não encontrada."};
+    
+    Object.assign(activity, data);
+    await activity.save();
+
+    return {activity : activity};
+    
   }
 }

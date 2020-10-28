@@ -1,6 +1,7 @@
 import { Field, ObjectType } from "type-graphql";
 import { BaseEntity, Column, Entity, ManyToOne, PrimaryColumn } from "typeorm";
 import { Activity } from "./activity";
+import { User } from "./user";
 
 @Entity()
 @ObjectType()
@@ -16,9 +17,9 @@ export class Class extends BaseEntity {
   @Field()
   time: string;
 
-  @Column({ default: 0 })
+  @Column({ default: [] , array: true})
   @Field()
-  students: number;
+  students: User[];
 
   @Column()
   @Field()
