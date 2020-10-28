@@ -6,7 +6,7 @@ import { User } from "./user";
 
 @Entity()
 @ObjectType()
-export class ExerciseFile extends BasicEntity {
+export class Exam extends BasicEntity {
   @Field()
   @Column()
   name: string;
