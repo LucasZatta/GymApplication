@@ -1,31 +1,25 @@
-import { Button, Col, Divider, Layout, Row } from "antd";
+import { Button, Col, Layout, Row } from "antd";
 import { Form, Formik } from "formik";
 import { useRouter } from "next/dist/client/router";
 import React from "react";
 import * as Yup from "yup";
 import { setAccessToken } from "../auth";
 import { InputField } from "../components/inputField";
-import { Wrapper } from "../components/wraper";
 import { useLoginMutation } from "../generated/graphql";
 const { Content } = Layout;
 
 interface loginProps {}
 
 export const LoginSchema = Yup.object().shape({
-  username: Yup.string()
-    .min(3, "Login deve ter no minimo 3 caracteres")
-    .required("Campo obrigatório"),
-  password: Yup.string()
-    .min(3, "Senha deve ter no minimo 3 caracteres")
-    .required("Campo obrigatório"),
+  username: Yup.string().min(3, "Login deve ter no minimo 3 caracteres").required("Campo obrigatório"),
+  password: Yup.string().min(3, "Senha deve ter no minimo 3 caracteres").required("Campo obrigatório"),
 });
 
-const login: React.FC<loginProps> = ({}) => {
+const Login: React.FC<loginProps> = ({}) => {
   const router = useRouter();
   const [login] = useLoginMutation();
   return (
-    <Wrapper variant="small">
-      <Divider>Login</Divider>
+    <div>
       <Formik
         validationSchema={LoginSchema}
         validateOnBlur={false}
@@ -41,8 +35,7 @@ const login: React.FC<loginProps> = ({}) => {
             },
           });
           if (res && res.data) {
-            if (res.data.login.accessToken)
-              setAccessToken(res.data.login.accessToken);
+            if (res.data.login.accessToken) setAccessToken(res.data.login.accessToken);
             else console.log(res.data?.login.errorMessage);
           }
 
@@ -59,41 +52,23 @@ const login: React.FC<loginProps> = ({}) => {
                 marginRight: "auto",
               }}
             >
-              <InputField
-                name="username"
-                placeholder="Informe o nome de usuário"
-                label="Usuário"
-                type="username"
-              />
-              <InputField
-                name="password"
-                placeholder="Informe a senha"
-                label="Senha"
-                type="password"
-              />
+              <InputField name="username" placeholder="Informe o nome de usuário" label="Usuário" type="username" />
+              <InputField name="password" placeholder="Informe a senha" label="Senha" type="password" />
+
               <Row
                 style={{
                   marginTop: "2rem",
-                  marginBottom: "2rem",
+                  marginBottom: "1rem",
                 }}
               >
                 <Col offset={2} span={8}>
-                  <Button
-                    block={true}
-                    type="primary"
-                    disabled={isSubmitting}
-                    htmlType="submit"
-                  >
+                  <Button block={true} type="primary" disabled={isSubmitting} htmlType="submit">
                     Login
                   </Button>
                 </Col>
                 <Col offset={4} span={8}>
-                  <Button
-                    block={true}
-                    type="default"
-                    onClick={() => router.push("/")}
-                  >
-                    Home
+                  <Button block={true} type="default" onClick={() => router.push("/register")}>
+                    Cadastre-se
                   </Button>
                 </Col>
               </Row>
@@ -101,7 +76,7 @@ const login: React.FC<loginProps> = ({}) => {
           </Form>
         )}
       </Formik>
-    </Wrapper>
+    </div>
   );
 };
 
@@ -109,4 +84,4 @@ const login: React.FC<loginProps> = ({}) => {
 //   return { props: {} };
 // }
 
-export default login;
+export default Login;
